@@ -8,20 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.yonghu;
+import dao.pinlun;
 import use.user;
 
 /**
- * Servlet implementation class denlu
+ * Servlet implementation class pinglun
  */
-@WebServlet("/denlu")
-public class denlu extends HttpServlet {
+@WebServlet("/pinglun")
+public class pinglun extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public denlu() {
+    public pinglun() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,23 +33,29 @@ public class denlu extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		user u = new user();
-		String username = request.getParameter("username");
-		String password = request.getParameter("pass");
-		u.setUsername(username);
-		u.setPass(password);
-		HttpSession session = request.getSession(); 
 		
-		yonghu h=new yonghu();
-		if(h.yanzhen(u.getUsername(),u.getPass())==1)
-		{
-			session.setAttribute("username",username);
-			session.setAttribute("pass",password);
-			response.sendRedirect(request.getContextPath()+"/denlu_success.jsp");
+		HttpSession session = request.getSession(true); 
+		String username =(String)session.getAttribute("username");
+		String id=(String) session.getAttribute("id");
+		int i=Integer.parseInt(id);
+		String article =(String)session.getAttribute("article"+i); 
+		String pinglun = request.getParameter("pinglun");
+
+	
+		u.setUsername(username);
+	    u.setId(i);
+		u.setÎÄÕÂ(article);
+		u.setÆÀÂÛ(pinglun);
+		pinlun p=new pinlun();
+		if(p.add(username, article, pinglun)==0) {
+			session.setAttribute("pinglun",pinglun);
+			response.sendRedirect(request.getContextPath()+"/pinglun_success.jsp");
 		}
 		else
 		{
-			response.sendRedirect(request.getContextPath()+"/denlu_failure.jsp");
+			response.sendRedirect(request.getContextPath()+"/pinglun_failure.jsp");
 		}
+		
 	}
 
 	/**

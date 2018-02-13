@@ -8,20 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.yonghu;
+import dao.wenzhang;
 import use.user;
 
 /**
- * Servlet implementation class denlu
+ * Servlet implementation class wenzhangshixian
  */
-@WebServlet("/denlu")
-public class denlu extends HttpServlet {
+@WebServlet("/wenzhangshixian")
+public class wenzhangshixian extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public denlu() {
+    public wenzhangshixian() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,22 +33,19 @@ public class denlu extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		user u = new user();
-		String username = request.getParameter("username");
-		String password = request.getParameter("pass");
+		HttpSession session = request.getSession(false); 
+		String username =(String)session.getAttribute("username"); 
+		String article = request.getParameter("article");
 		u.setUsername(username);
-		u.setPass(password);
-		HttpSession session = request.getSession(); 
-		
-		yonghu h=new yonghu();
-		if(h.yanzhen(u.getUsername(),u.getPass())==1)
-		{
-			session.setAttribute("username",username);
-			session.setAttribute("pass",password);
-			response.sendRedirect(request.getContextPath()+"/denlu_success.jsp");
+		u.setÎÄÕÂ(article);
+		wenzhang w=new wenzhang();
+		if(w.add(u.getUsername(), u.getÎÄÕÂ())==0) {
+			session.setAttribute("article",article);
+			response.sendRedirect(request.getContextPath()+"/shangchuan_success.jsp");
 		}
 		else
 		{
-			response.sendRedirect(request.getContextPath()+"/denlu_failure.jsp");
+			response.sendRedirect(request.getContextPath()+"/shangchuan_failure.jsp");
 		}
 	}
 

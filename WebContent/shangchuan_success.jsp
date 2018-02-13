@@ -4,11 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>登陆成功</title>
+<title>文章上传成功</title>
 </head>
 <body>
-<h1>欢迎登陆</h1>
-<a href="wenzhang.jsp">文章上传</a>
+<h1>欢迎继续上传</h1>
 <a href="xianshiwenzhang.jsp">显示文章</a>
 </body>
 </html>

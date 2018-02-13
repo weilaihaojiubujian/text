@@ -7,8 +7,15 @@ private String 文章;
 private String 作者;
 private String 评论人;
 private String 评论;
+private int id;
 public String getUsername() {
 	return username;
+}
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
 }
 public void setUsername(String username) {
 	this.username = username;
