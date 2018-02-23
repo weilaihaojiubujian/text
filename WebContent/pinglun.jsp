@@ -40,9 +40,12 @@ body {
 </style>
 </head>
 <body>
-<%String id=request.getParameter("use");
+<%String id=null;
+ id=request.getParameter("use");
 
-session.setAttribute("id",id);
+if(id!=null){
+	session.setAttribute("id",id);
+}
 
 %>
  <form  action="servlet/pinglun"method="post">
@@ -53,7 +56,7 @@ session.setAttribute("id",id);
 			    	</td>
 			    </tr>
 			    <div id="login_control">  
-           <input type="submit" id="btn_login" value="评论" onclick="login();name="submit""/> 
+           <input type="submit" id="btn_login" value="评论" onclick="login();"name="submit"/> 
              
         </div>
  </form> 

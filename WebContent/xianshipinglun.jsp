@@ -1,24 +1,23 @@
 <%@ page language="java" import="java.util.*,java.net.*" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <%
 request.setCharacterEncoding("utf-8");
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>功能</title>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>评论</title>
+</head>
 <style type="text/css">
 
-
-  body {  
-    background: url(36.jpg);  
+body {  
+    background: url(34.jpg);  
     background-size: 100%;  
     background-repeat: no-repeat;  
 }  
+  
   #btn_login {  
     font-size: 14px;  
     font-family: 宋体;  
@@ -50,12 +49,13 @@ request.setCharacterEncoding("utf-8");
 <ul>
 <li><p><b></b>
     <hr>
-    <%!  int pageSize=4;
+        <%!  int pageSize=4;
  int pageCount;
  int showPage;
  %>
     <% 
-     
+    /* String article=request.getParameter("article");*/
+
       request.setCharacterEncoding("utf-8");
       String username="";
       String password = "";
@@ -106,15 +106,35 @@ request.setCharacterEncoding("utf-8");
 		      System.out.println("Creating statement...");
 		      stmt = conn.createStatement();
 		      String sql;
-		      
-		      ResultSet  rs=stmt.executeQuery("select * from wenzhang");
-		      rs.last();
-		      int recordCount=rs.getRow();
+		 
+		      ResultSet  rs=stmt.executeQuery("select * from pinglun");
+		      String id=request.getParameter("id");
+		      int k=Integer.parseInt(id);
+		      System.out.println(id);
+		      session.setAttribute("id",id);
+		      String article=(String)session.getAttribute("article"+id); 
+		      System.out.println(article);
+		      int recordCount=0;
+		      while(rs.next())
+		      {
+		    	  String first=rs.getString("文章");
+		    	  if(first.compareTo(article)==0)
+		    	  {
+		    		  recordCount++;
+		    	  }
+		    	 
+		    	 
+		      }
+		      rs.absolute(1);
+		      System.out.println(recordCount);
+		     
+		   
 		      pageCount=(recordCount%pageSize==0)?(recordCount/pageSize):(recordCount/pageSize+1);
 		      if(pageCount==0)
 		      {
 		    	  pageCount++;
 		      }
+		      
 		      String integer=request.getParameter("showPage");
 		      if(integer==null){
 		       integer="1";
@@ -131,22 +151,27 @@ request.setCharacterEncoding("utf-8");
 		      }
 		      int position=(showPage-1)*pageSize+1;
 		      rs.absolute(position);
+		      int i=1;
+		     
 		      
-		      for(int i=1;i<=pageSize;i++){  
-		    	  String wenben=rs.getString("文章");
-		    	
-		    	int t=(showPage-1)*4+i;
-		    	  session.setAttribute("article"+t,wenben);
-		    	  
-		    	 %>
-		    	    <table>
-		    	     <tr> 
-		    	      <p>尊敬的<%=rs.getString("作者") %></p>
-		    	      <p>文章序号:<%=(showPage-1)*4+i%></p>
-		    	      
-		    	      <p id="demoP"><%=rs.getString("文章") %></p>
-                       <button id="demoBtn">显示所有</button>
-                      <script>
+		      while(i<=pageSize)
+		      {  
+		    	  if(rs.next())
+		    	  {
+		    		  String first=rs.getString("文章");
+		              String wenben=rs.getString("评论人");
+		              String second=rs.getString("评论");
+		              String q="";
+			    	  if(first.compareTo(article)==0){
+			    		 i++;%>
+			    	    <table>
+			    	     <tr> 
+			    	      <p>尊敬的<%=first %></p>
+			    	      <p><%=wenben %></p>
+			    	     
+			    	       <p id="demoP"><%=second %></p>
+                           <button id="demoBtn">显示所有</button>
+                            <script>
                               var oP = document.getElementById('demoP');
                               var oBtn = document.getElementById('demoBtn');
                               var allContent = oP.innerHTML;                   //存放所有内容
@@ -154,18 +179,21 @@ request.setCharacterEncoding("utf-8");
                               oBtn.onclick=function(){
                               oP.innerHTML = allContent;                    //显示所有内容
                               }
-                    </script>
-		    	     </tr>
-		    	     <form  action="pinglun.jsp" method="post">
-	               <label >请输入文章序号:</label>
-	              <input type="text"  name="use" id="use" "/>
-	               <input type="submit"  value="评论"  onclick="login();"name="submit"/>  
-	               </form> 
-		    	    <a href="xianshipinglun.jsp?id=<%=t %>">显示评论</a>
-		    	    </table>
-		    	     <%  
-   rs.next();
+                          </script>
+			    	     </tr>
+			    	   
+			    	     <%   }
+			    	
+		    	  }
+		    	  else{
+		    		  break;
+		    	  }
+		    	  
+		    	  
+   
+  
   } 
+		      
   rs.close();
   conn.close();
   }
@@ -175,26 +203,28 @@ request.setCharacterEncoding("utf-8");
  <br>
  第<%=showPage %>页（共<%=pageCount %>页）
  <br>
- <a href="xianshiwenzhang.jsp?showPage=1">首页</a>
- <a href="xianshiwenzhang.jsp?showPage=<%=showPage-1%>">上一页</a>
+ <a href="xianshipinglun.jsp?showPage=1">首页</a>
+ <a href="xianshipinglun.jsp?showPage=<%=showPage-1%>">上一页</a>
 <% //根据pageCount的值显示每一页的数字并附加上相应的超链接
   for(int i=1;i<=pageCount;i++){
  %>
-   <a href="xianshiwenzhang.jsp?showPage=<%=i%>"><%=i%></a>
+   <a href="xianshipinglun.jsp?showPage=<%=i%>"><%=i%></a>
 <% }
  %> 
- <a href="xianshiwenzhang.jsp?showPage=<%=showPage+1%>">下一页</a>
- <a href="xianshiwenzhang.jsp?showPage=<%=pageCount%>">末页</a>
+ <a href="xianshipinglun.jsp?showPage=<%=showPage+1%>">下一页</a>
+ <a href="xianshipinglun.jsp?showPage=<%=pageCount%>">末页</a>
  <!-- 通过表单提交用户想要显示的页数 -->
  <form action="" method="get">
   跳转到第<input type="text" name="showPage" size="4">页
   <input type="submit" name="submit" value="跳转">
  </form> 
 		 
- 
+
 </p></li>
 </ul>
-</div>  
-<a href="wenzhang.jsp">上传文章</a>
+</div> 
+<a href="pinglun.jsp">上传文章</a>
+
+ </form> 
 </body>
-</html>
+</html>>
